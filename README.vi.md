@@ -1,25 +1,25 @@
 # DEV DAYS WALKTHROUGH - QUICKSTART
-This is the demo application inside session Introduction to Xamarin at XDD Hà Nội 2016.
+Đây là nội dung bài demo trong bài Giới thiệu về Xamarin tại buổi XDD Hà Nội - 2016.
 
-In this demo, we will build an application
-- Allow user to enter a phoneword
-- Translate that phoneword to a phone number
-- Allow user to call to that phone number
+Trong bài, ta sẽ xây dựng một ứng dụng cho phép
+- Cho phép nhập một chuỗi các kí tự
+- Dịch chuỗi nhập vào ra số điện thoại
+- Cho phép thực hiện cuộc gọi tới số điện thoại vừa dịch được
 
 ## ANDROID WALKTHROUGH
  
-![Android UI](https://developer.xamarin.com/guides/android/getting_started/hello,android/hello,android_quickstart/Images/intro-app-examples-sml.png)
+![Giao diện Android](https://developer.xamarin.com/guides/android/getting_started/hello,android/hello,android_quickstart/Images/intro-app-examples-sml.png)
 
-1. Create a new Android project
-2. Introduce briefly about Android project struture
-3. Add UI controls
-    - TextView: `Enter a Phoneword`
-    - EditText: hint `Enter here`
-    - Button: `Translate`
-    - Button: `Call`
-4. Add event handlers for buttons
-    - Button `Translate`
-        * Support class for translating phoneword to phone number
+1. Tạo một dự án Android mới
+2. Giới thiệu qua cấu trúc của dự án Android
+3. Thực hiện thêm các UI controls
+    - TextView: Hiện tiêu đề `Enter a Phoneword`
+    - EditText: Để nhập chuỗi kĩ tự, gợi ý `Enter here`
+    - Button: Để dịch chuỗi kĩ tự ra số điện thoại, tiêu đề `Translate`
+    - Button: Để thực hiện cuộc gọi tới số điện thoại vừa dịch được, tiêu đề `Call`
+4. Thêm các logic xử lý khi người dụng nhấn vào các nút
+    - Nút `Translate`
+        * Class hỗ trợ việc dịch chuỗi kí tự ra chuỗi số
         ```
         using System.Text;
         using System;
@@ -77,7 +77,7 @@ In this demo, we will build an application
         }
         ```
 
-        * Event handler for button `Translate`
+        * Logic cho nút `Translate`
         ```
         translatedNumber = Core.PhonewordTranslator.ToNumber(txtPhoneword.Text);
 
@@ -91,7 +91,7 @@ In this demo, we will build an application
             btnCall.Enabled = false;
         }
         ```
-    - Event handler for button `Call`
+    - Nút `Call`
         ```
         var alert = new Android.Support.V7.App.AlertDialog.Builder(this)
                         .SetMessage("Call " + translatedNumber + "?")
@@ -108,18 +108,18 @@ In this demo, we will build an application
         ```
 
 ## iOS WALKTHROUGH
-![iOS UI](https://developer.xamarin.com/guides/ios/getting_started/hello,_iOS/hello,iOS_quickstart/Images/image1.png)
+![Giao diện iOS](https://developer.xamarin.com/guides/ios/getting_started/hello,_iOS/hello,iOS_quickstart/Images/image1.png)
 
-1. Create a single view iOS project
-2. Introduce briefly about project structure
-3. Add UI controls
-    - UILabel: `Enter a Phoneword`
-    - UITextField: placeholder `Enter here`
-    - UIButton: `Translate`
-    - UIButton: `Call`
-4. Add event handlers for buttons
-- Button `Translate`
-    * Support class for translating phoneword to phone number
+1. Tạo ứng dụng iOS mới
+2. Giới thiệu qua cấu trúc dự án iOS
+3. Thực hiện thêm các UI controls
+    - UILabel: Hiện tiêu đề `Enter a Phoneword`
+    - UITextField: Để nhập chuỗi kĩ tự, gợi ý `Enter here`
+    - UIButton: Để dịch chuỗi kĩ tự ra số điện thoại, tiêu đề `Translate`
+    - UIButton: Để thực hiện cuộc gọi tới số điện thoại vừa dịch được, tiêu đề `Call`
+4. Thêm các logic xử lý khi người dụng nhấn vào các nút
+- Nút `Translate`
+    * Class hỗ trợ việc dịch chuỗi kí tự ra chuỗi số
     ```
     using System.Text;
     using System;
@@ -177,7 +177,7 @@ In this demo, we will build an application
     }
     ```
 
-    * Add event handler to button `Translate`
+    * Logic cho nút `Translate`
     ```
     translatedNumber = Core.PhonewordTranslator.ToNumber(txtPhoneword.Text);
 
@@ -191,7 +191,7 @@ In this demo, we will build an application
         btnCall.Enabled = false;
     }
     ```
-- Add event handler to button `Call`
+- Nút `Call`
     ```
     var alert = new UIAlertController();
     alert.Message = $"Call {translatedNumber}?";
@@ -223,34 +223,33 @@ In this demo, we will build an application
     PresentViewController(alert, true, null);
     ```
 
-## Code sharing across platforms
-As you can see, there are a lot of code duplication on these above two projects.
-PCL project and SharedProject are coming to rescue.
+## Chia sẻ code giữa các nền tảng
+Hiện tại chúng ta thấy, code đang bị lặp khá nhiều, nhất là class PhonewordTranslator.
+SharedProject/PCL sinh ra để giúp giải quyết vấn đề này.
 
 ### PCL
-`PhonewordTranslator` is totally a pure C# class without any dependency on platforms.
-It's the time for PCL.
-
-1. Create a new PCL project
-2. Move class `PhonewordTranslator` to PCL project
-3. Add reference from Android/iOS projects to PCL project
-4. Re-run
+Ta thấy class `PhonewordTranslator` hoàn toàn là một class thuần C#, không phụ thuộc vào Android/iOS.
+PCL sẽ giúp ta chia sẻ những đoạn code chung
+1. Tạo một dự án PCL
+2. Sao chép class `PhonewordTranslator` sang dự án vừa tạo
+4. Thêm tham chiếu từ dự án Android/iOS tới dự án vừa tạo
+5. Chạy lại
 
 ### ViewModel
-There are still duplications inside ViewController and MainActivity. One of that is at the event handler for button `Translate`.
-ViewModel is the solution to reduce those kinds of duplications
+Ta thấy trong 2 calss ViewController và MainActivity vẫn còn rất nhiều đoạn code lặp, điển hình là khi thực hiện dịch từ chuỗi ra số điện thoại.
+ViewModel sẽ giúp chúng ta chia sẻ những logic như vậy
 
-1. Create class `MainViewModel` in PCL project
+1. Tạo class `MainViewModel` trong dự án PCL
     ```
     public class MainViewModel {
 
     }
     ```
-2. Add private field `translatedPhonenumber`
+2. Thêm thuộc tính `translatedPhonenumber`
     ```
     private string translatedNumber;
     ```
-3. Add method `TryTranslate`
+3. Thêm method `TryTranslate`
     ```
     public bool TryTranslate(string text, out string btnCallText)
     {
@@ -267,16 +266,16 @@ ViewModel is the solution to reduce those kinds of duplications
         }
     }
     ```
-4. Amend class MainActivity và ViewController using new view model
-- Add new field
+4. Cập nhật class MainActivity và ViewController để sử dụng code mới
+- Khai báo một thuộc tính mới
     ```
     private MainViewModel viewModel;
     ```
-- Initilize an instance of MainViewModel in method `OnCreate/ViewDidLoad`
+- Khởi tạo MainViewModel trong `OnCreate/ViewDidLoad`
     ```
     viewModel =  new MainViewModel();
     ```
-- Amend event handler for button `Translate`
+- Cập nhập event handler cho nút `Translate`
     - Android
     ```
     string btnCallText;
@@ -290,19 +289,18 @@ ViewModel is the solution to reduce those kinds of duplications
     btnCall.SetTitle(btnCallText, UIControlState.Normal);
     ```
 ### Shared Project
-There is still code duplication when handling button `Call`. However, there are dependencies on platform specific features.
-SharedProject could help to reuse code but leverage platform specific features.
+Vẫn còn code lặp: Phần code cho việc xử lý event handler của nút `Call` là khá giống nhau về mặt khái niệm/logic, nhưng lại không thể chuyển sang PCL được vì code là khác nhau hoàn toàn giữa Android và iOS. Giải pháp là định nghĩa interface trong PCL, triển khai trong mỗi nền tảng kết hợp với SharedProject.
 
-*Change the way of making a call*
+Bắt đầu với việc thực hiện cuộc gọi
 
-1. Create interface `IPhoneCaller` in project PCL
+1. Tạo interface `IPhoneCaller` trong dự án PCL
     ```
     public interface IPhoneCaller {
         void Call(string phoneNumber);
     }
     ```
-2. Create a SharedProject project
-3. Create class `PhoneCaller` implementing interface `IPhoneCaller`
+2. Tạo một dự án SharedProject
+3. Tạo class `PhoneCaller` thừa kế interface `IPhoneCaller`
     ```
     using System;
     using XamarinQs.Core;
@@ -345,8 +343,8 @@ SharedProject could help to reuse code but leverage platform specific features.
     }
 
     ```
-4. Add references from Android/iOS projects to SharedProject project
-5. Amend code to make use of above class/interface
+4. Thêm tham chiếu từ dự án Android/iOS tới dự án vừa tạo
+5. Thay phần code thực hiện cuộc gọi 
     - PCL
     ```
     private IPhoneCaller phoneCaller;
@@ -385,14 +383,15 @@ SharedProject could help to reuse code but leverage platform specific features.
             alert.DismissViewController(true, null);
         });
     ```
-6. Re-run
+6. Chạy lại
 
 ### NuGet
-We could do the same for showing a confirmation dialog. BUT, we have a communitty sharing their re-use libraries via NuGet.
-We could leverage to speed up our development.
+Vẫn còn code lặp: Cả hai bên Android/iOS đều hiển thị một cửa sổ xác nhận xem người dùng nên thực hiện cuộc gọi tới số vừa được dịch ra không. Về mặt khái niệm và logic là giống nhau, chỉ có code là khác nhau, ta hoàn toàn có thể làm giống như phần code vừa làm ở trên.
 
-1. Add package `UserDiaglogs` to PCL, iOS, Android projects
-2. Amend class `MainViewModel`
+NHƯNG, ta không phải làm vậy, ta có thể sử dụng lại code từ cộng đồng đã chia sẻ qua NuGet.
+
+1. Thêm package `UserDiaglogs` vào các dự án PCL, iOS, Android
+2. Cập nhập trong `MainViewModel`
     ```
     private IPhoneCaller phoneCaller;
     private IUserDialogs userDialogs;
@@ -419,7 +418,7 @@ We could leverage to speed up our development.
         return confirmed;
     }
     ```
-3. Amend class `MainActivity` and class `ViewController`
+3. Cập nhật trong `MainActivity` và `ViewController`
     - Android
     ```
     viewModel = new MainViewModel(new PhoneCaller(this), new UserDialogsImpl(() => this));
@@ -442,4 +441,4 @@ We could leverage to speed up our development.
         await viewModel.Call();
     };
     ```
-4. Re-run
+4. Chạy lại
